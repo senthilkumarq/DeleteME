@@ -17,17 +17,25 @@ jobs:
       run: npm ci
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-    - name: Installation of "allure-playwright" module
-      run: npm i -D @playwright/test allure-playwright
-    - name: Installing Allure command line
-      run: npm install -g allure-commandline --save-dev 
+    - name: Install Allure Playwright module
+      run: npm install -D @playwright/test allure-playwright
+    - name: Install Allure Command Line
+      run: npm install -g allure-commandline --save-dev
     - name: Run Playwright tests
-      run: npx playwright test
+      run: npx playwright test --reporter=allure-playwright
     - name: Generate Allure report
-      run: allure generate allure-results -o allure-report --clean  
+      run: allure generate allure-results -o allure-report --clean
+    - name: Generate HTML report
+      run: mkdir -p html-report && cp -r path-to-html-reports/* html-report/
     - uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: playwright-report
-        path: playwright-report/
+        name: allure-report
+        path: allure-report/
+        retention-days: 30
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: html-report
+        path: html-report/
         retention-days: 30
